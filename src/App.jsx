@@ -8,8 +8,6 @@ export default function App() {
     JSON.parse(localStorage.getItem("values")) || generateValues(),
   );
 
-  // const [count, setCount] = useState(0);
-
   useEffect(() => {
     localStorage.setItem("values", JSON.stringify(values));
   }, [values]);

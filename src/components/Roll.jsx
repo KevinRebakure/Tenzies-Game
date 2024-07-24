@@ -1,3 +1,7 @@
 export default function Roll() {
-    return <button className="mx-auto block bg-[#5035FF] text-white text-xl font-medium py-3 px-10 rounded-lg">Roll</button>;
+  return (
+    <button className="mx-auto block rounded-lg bg-[#5035FF] px-10 py-3 text-xl font-medium text-white">
+      Roll
+    </button>
+  );
 }

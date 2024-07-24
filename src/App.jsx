@@ -5,7 +5,7 @@ import Roll from "./components/Roll";
 
 export default function App() {
   const [values, setValues] = useState(generateValues());
-  const [label, setLabel] = useState("Roll");
+  const [inGame, setInGame] = useState(true);
 
   useEffect(() => {
     const selections = values.reduce((t, value) => {
@@ -17,7 +17,7 @@ export default function App() {
     }, 0);
 
     if (selections === 10) {
-      setLabel("Restart");
+      setInGame((prev) => !prev);
     }
   }, [values]);
 
@@ -36,7 +36,7 @@ export default function App() {
   }
 
   function rollDice() {
-    if (label === "Roll") {
+    if (inGame) {
       setValues((prev) => {
         return [
           ...prev.map((die) => {
@@ -52,8 +52,9 @@ export default function App() {
           }),
         ];
       });
-    } else if (label === "Restart") {
+    } else {
       setValues(generateValues());
+      setInGame((prev) => !prev);
     }
   }
 
@@ -69,8 +70,6 @@ export default function App() {
     });
   }
 
-  console.log(values);
-
   return (
     <>
       <div className="relative flex h-[100vh] w-full items-center justify-center bg-[#0B2434]">
@@ -78,10 +77,15 @@ export default function App() {
           <Header />
           <div className="flex w-full flex-wrap justify-center gap-10">
             {values.map((value) => (
-              <Dice value={value} key={value.id} handleHold={handleHold} />
+              <Dice
+                inGame={inGame}
+                value={value}
+                key={value.id}
+                handleHold={handleHold}
+              />
             ))}
           </div>
-          <Roll rollDice={rollDice} label={label} />
+          <Roll inGame={inGame} rollDice={rollDice} />
         </div>
       </div>
     </>

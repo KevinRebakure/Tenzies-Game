@@ -7,6 +7,7 @@ export default function App() {
   const [values, setValues] = useState(
     JSON.parse(localStorage.getItem("values")) || generateValues(),
   );
+  
   const [inGame, setInGame] = useState(
     JSON.parse(localStorage.getItem("inGame")) || true,
   );
@@ -77,7 +78,7 @@ export default function App() {
         if (die.id !== dieID && die.hold === false) {
           return die;
         } else {
-          return { ...die, hold: true };
+          return { ...die, hold:  true};
         }
       });
     });

@@ -49,10 +49,10 @@ export default function App() {
   function handleHold(dieID) {
     setValues((prev) => {
       return prev.map((die) => {
-        if (die.id !== dieID && die.hold === false) {
+        if (die.id !== dieID) {
           return die;
         } else {
-          return { ...die, hold: true };
+          return { ...die, hold: !die.hold };
         }
       });
     });

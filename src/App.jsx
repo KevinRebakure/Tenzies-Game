@@ -7,31 +7,12 @@ export default function App() {
   const [values, setValues] = useState(
     JSON.parse(localStorage.getItem("values")) || generateValues(),
   );
-  
-  const [inGame, setInGame] = useState(
-    JSON.parse(localStorage.getItem("inGame")) || true,
-  );
 
-  useEffect(() => {
-    const selections = values.reduce((t, value) => {
-      if (value.hold) {
-        return t + 1;
-      } else {
-        return t + 0;
-      }
-    }, 0);
-
-    if (selections === 10) {
-      setInGame((prev) => !prev);
-    }
-  }, [values]);
+  // const [count, setCount] = useState(0);
 
   useEffect(() => {
     localStorage.setItem("values", JSON.stringify(values));
   }, [values]);
-  useEffect(() => {
-    localStorage.setItem("inGame", JSON.stringify(inGame));
-  }, [inGame]);
 
   console.log(generateValues());
 
@@ -50,26 +31,21 @@ export default function App() {
   }
 
   function rollDice() {
-    if (inGame) {
-      setValues((prev) => {
-        return [
-          ...prev.map((die) => {
-            if (die.hold) {
-              return die;
-            } else {
-              return {
-                num: Math.floor(Math.random() * 6 + 1),
-                hold: false,
-                id: die.id,
-              };
-            }
-          }),
-        ];
-      });
-    } else {
-      setValues(generateValues());
-      setInGame((prev) => !prev);
-    }
+    setValues((prev) => {
+      return [
+        ...prev.map((die) => {
+          if (die.hold) {
+            return die;
+          } else {
+            return {
+              num: Math.floor(Math.random() * 6 + 1),
+              hold: false,
+              id: die.id,
+            };
+          }
+        }),
+      ];
+    });
   }
 
   function handleHold(dieID) {
@@ -78,7 +54,7 @@ export default function App() {
         if (die.id !== dieID && die.hold === false) {
           return die;
         } else {
-          return { ...die, hold:  true};
+          return { ...die, hold: true };
         }
       });
     });
@@ -91,17 +67,13 @@ export default function App() {
           <Header />
           <div className="flex w-full flex-wrap justify-center gap-10">
             {values.map((value) => (
-              <Dice
-                inGame={inGame}
-                value={value}
-                key={value.id}
-                handleHold={handleHold}
-              />
+              <Dice value={value} key={value.id} handleHold={handleHold} />
             ))}
           </div>
-          <Roll inGame={inGame} rollDice={rollDice} />
+          <Roll rollDice={rollDice} />
         </div>
       </div>
     </>
   );
 }
+// }

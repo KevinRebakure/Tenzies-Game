@@ -1,10 +1,25 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Dice from "./components/Dice";
 import Header from "./components/Header";
 import Roll from "./components/Roll";
 
 export default function App() {
   const [values, setValues] = useState(generateValues());
+  const [label, setLabel] = useState("Roll");
+
+  useEffect(() => {
+    const selections = values.reduce((t, value) => {
+      if (value.hold) {
+        return t + 1;
+      } else {
+        return t + 0;
+      }
+    }, 0);
+
+    if (selections === 10) {
+      setLabel("Restart");
+    }
+  }, [values]);
 
   function generateValues() {
     const _values = [];
@@ -21,19 +36,25 @@ export default function App() {
   }
 
   function rollDice() {
-    setValues((prev) => {
-      return [...prev.map((die)=>{
-        if (die.hold) {
-          return die
-        } else {
-          return {
-            num: Math.floor(Math.random() * 6 + 1),
-            hold: false,
-            id: die.id,
-          };
-        }
-      })];
-    });
+    if (label === "Roll") {
+      setValues((prev) => {
+        return [
+          ...prev.map((die) => {
+            if (die.hold) {
+              return die;
+            } else {
+              return {
+                num: Math.floor(Math.random() * 6 + 1),
+                hold: false,
+                id: die.id,
+              };
+            }
+          }),
+        ];
+      });
+    } else if (label === "Restart") {
+      setValues(generateValues());
+    }
   }
 
   function handleHold(dieID) {
@@ -45,8 +66,6 @@ export default function App() {
           return { ...die, hold: true };
         }
       });
-
-      // return [...generateValues(), prev.filter((die)=>die.id === dieID)]
     });
   }
 
@@ -62,7 +81,7 @@ export default function App() {
               <Dice value={value} key={value.id} handleHold={handleHold} />
             ))}
           </div>
-          <Roll rollDice={rollDice} />
+          <Roll rollDice={rollDice} label={label} />
         </div>
       </div>
     </>

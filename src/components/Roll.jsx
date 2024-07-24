@@ -1,4 +1,4 @@
-export default function Roll({ rollDice }) {
+export default function Roll({ rollDice, label }) {
   return (
     <button
       onClick={() => {
@@ -6,7 +6,7 @@ export default function Roll({ rollDice }) {
       }}
       className="mx-auto block rounded-lg bg-[#5035FF] px-10 py-3 text-xl font-medium text-white"
     >
-      Roll
+      {label}
     </button>
   );
 }

@@ -8,6 +8,18 @@ export default function App() {
     JSON.parse(localStorage.getItem("values")) || generateValues(),
   );
 
+  // const [count, setCount] = useState(0)
+
+  // console.log(
+  //   count
+  // )
+
+  // useEffect(()=>{
+  //   setCount(values.filter((die)=>{
+  //     return die.hold
+  //   }).length)
+  // }, [values])
+
   useEffect(() => {
     localStorage.setItem("values", JSON.stringify(values));
   }, [values]);

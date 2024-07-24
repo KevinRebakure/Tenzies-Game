@@ -4,8 +4,12 @@ import Header from "./components/Header";
 import Roll from "./components/Roll";
 
 export default function App() {
-  const [values, setValues] = useState(generateValues());
-  const [inGame, setInGame] = useState(true);
+  const [values, setValues] = useState(
+    JSON.parse(localStorage.getItem("values")) || generateValues(),
+  );
+  const [inGame, setInGame] = useState(
+    JSON.parse(localStorage.getItem("inGame")) || true,
+  );
 
   useEffect(() => {
     const selections = values.reduce((t, value) => {
@@ -20,6 +24,15 @@ export default function App() {
       setInGame((prev) => !prev);
     }
   }, [values]);
+
+  useEffect(() => {
+    localStorage.setItem("values", JSON.stringify(values));
+  }, [values]);
+  useEffect(() => {
+    localStorage.setItem("inGame", JSON.stringify(inGame));
+  }, [inGame]);
+
+  console.log(generateValues());
 
   function generateValues() {
     const _values = [];

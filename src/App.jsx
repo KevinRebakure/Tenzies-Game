@@ -8,17 +8,18 @@ export default function App() {
     JSON.parse(localStorage.getItem("values")) || generateValues(),
   );
 
-  // const [count, setCount] = useState(0)
+  const [end, setEnd] = useState(false)
 
-  // console.log(
-  //   count
-  // )
-
-  // useEffect(()=>{
-  //   setCount(values.filter((die)=>{
-  //     return die.hold
-  //   }).length)
-  // }, [values])
+  useEffect(()=>{
+    const allChecked = values.every((die)=>die.hold)
+    const unique = values[0].num 
+    const allSimilar = values.every((die)=>die.num === unique)
+    if (allChecked && allSimilar) {
+      setEnd(true)
+      console.log('game over')
+      console.log(end)
+    }
+  }, [values])
 
   useEffect(() => {
     localStorage.setItem("values", JSON.stringify(values));
@@ -41,21 +42,26 @@ export default function App() {
   }
 
   function rollDice() {
-    setValues((prev) => {
-      return [
-        ...prev.map((die) => {
-          if (die.hold) {
-            return die;
-          } else {
-            return {
-              num: Math.floor(Math.random() * 6 + 1),
-              hold: false,
-              id: die.id,
-            };
-          }
-        }),
-      ];
-    });
+    if (!end) {
+      setValues((prev) => {
+        return [
+          ...prev.map((die) => {
+            if (die.hold) {
+              return die;
+            } else {
+              return {
+                num: Math.floor(Math.random() * 6 + 1),
+                hold: false,
+                id: die.id,
+              };
+            }
+          }),
+        ];
+      });
+    } else {
+      setValues(generateValues())
+      setEnd(false)
+    }
   }
 
   function handleHold(dieID) {
@@ -77,10 +83,10 @@ export default function App() {
           <Header />
           <div className="flex w-full flex-wrap justify-center gap-10">
             {values.map((value) => (
-              <Dice value={value} key={value.id} handleHold={handleHold} />
+              <Dice value={value} key={value.id} handleHold={handleHold} gameOver={end}/>
             ))}
           </div>
-          <Roll rollDice={rollDice} />
+          <Roll rollDice={rollDice} gameOver={end}/>
         </div>
       </div>
     </>

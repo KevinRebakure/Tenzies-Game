@@ -7,31 +7,23 @@ export default function App() {
   const [values, setValues] = useState(
     JSON.parse(localStorage.getItem("values")) || generateValues(),
   );
-  
-  const [inGame, setInGame] = useState(
-    JSON.parse(localStorage.getItem("inGame")) || true,
-  );
 
-  useEffect(() => {
-    const selections = values.reduce((t, value) => {
-      if (value.hold) {
-        return t + 1;
-      } else {
-        return t + 0;
-      }
-    }, 0);
+  const [end, setEnd] = useState(false)
 
-    if (selections === 10) {
-      setInGame((prev) => !prev);
+  useEffect(()=>{
+    const allChecked = values.every((die)=>die.hold)
+    const unique = values[0].num 
+    const allSimilar = values.every((die)=>die.num === unique)
+    if (allChecked && allSimilar) {
+      setEnd(true)
+      console.log('game over')
+      console.log(end)
     }
-  }, [values]);
+  }, [values])
 
   useEffect(() => {
     localStorage.setItem("values", JSON.stringify(values));
   }, [values]);
-  useEffect(() => {
-    localStorage.setItem("inGame", JSON.stringify(inGame));
-  }, [inGame]);
 
   console.log(generateValues());
 
@@ -50,7 +42,7 @@ export default function App() {
   }
 
   function rollDice() {
-    if (inGame) {
+    if (!end) {
       setValues((prev) => {
         return [
           ...prev.map((die) => {
@@ -67,18 +59,18 @@ export default function App() {
         ];
       });
     } else {
-      setValues(generateValues());
-      setInGame((prev) => !prev);
+      setValues(generateValues())
+      setEnd(false)
     }
   }
 
   function handleHold(dieID) {
     setValues((prev) => {
       return prev.map((die) => {
-        if (die.id !== dieID && die.hold === false) {
+        if (die.id !== dieID) {
           return die;
         } else {
-          return { ...die, hold:  true};
+          return { ...die, hold: !die.hold };
         }
       });
     });
@@ -91,15 +83,10 @@ export default function App() {
           <Header />
           <div className="flex w-full flex-wrap justify-center gap-10">
             {values.map((value) => (
-              <Dice
-                inGame={inGame}
-                value={value}
-                key={value.id}
-                handleHold={handleHold}
-              />
+              <Dice value={value} key={value.id} handleHold={handleHold} gameOver={end}/>
             ))}
           </div>
-          <Roll inGame={inGame} rollDice={rollDice} />
+          <Roll rollDice={rollDice} gameOver={end}/>
         </div>
       </div>
     </>

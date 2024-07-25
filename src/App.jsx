@@ -25,7 +25,6 @@ export default function App() {
     localStorage.setItem("values", JSON.stringify(values));
   }, [values]);
 
-  console.log(generateValues());
 
   function generateValues() {
     const _values = [];
